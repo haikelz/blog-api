@@ -6,7 +6,7 @@
   "main": "src/app.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/haikelz/express-ts-starter"
+    "url": "https://github.com/haikelz/blog-api"
   },
   "scripts": {
     "format:check": "prettier --check .",
@@ -21,6 +21,7 @@
     "apollo-server-express": "^3.13.0",
     "argon2": "^0.41.1",
     "body-parser": "^1.20.2",
+    "bullmq": "^5.13.0",
     "compression": "^1.7.4",
     "connect-redis": "^7.1.1",
     "cors": "^2.8.5",

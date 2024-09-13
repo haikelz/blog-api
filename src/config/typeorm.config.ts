@@ -7,6 +7,7 @@ import {
   DATABASE_PASSWORD,
   DATABASE_PORT,
   DATABASE_USERNAME,
+  REDIS_PORT,
 } from "./constants.config";
 
 export const AppDataSource = new DataSource({
@@ -16,7 +17,17 @@ export const AppDataSource = new DataSource({
   username: DATABASE_USERNAME,
   password: DATABASE_PASSWORD,
   database: DATABASE_NAME,
-  entities: [Blog, Author],
   synchronize: true,
   logging: true,
+  entities: [Blog, Author],
+  // We want to use redis for caching, so we can configure the options like this:
+  cache: {
+    type: "ioredis",
+    options: {
+      socket: {
+        host: "localhost",
+        port: Number(REDIS_PORT),
+      },
+    },
+  },
 });

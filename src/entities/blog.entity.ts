@@ -23,7 +23,7 @@ export class Blog extends BaseEntity {
   thumbnail: string;
 
   @Field(() => Author)
-  @ManyToOne(() => Author, (author) => author.email)
+  @ManyToOne(() => Author, (author) => author.email, { onDelete: "CASCADE" })
   author: Author;
 
   @Field()
