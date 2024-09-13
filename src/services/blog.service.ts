@@ -1,6 +1,6 @@
 import slugify from "slugify";
 import { v4 as uuidv4 } from "uuid";
-import { AppDataSource } from "../config/typeorm.config";
+import AppDataSource from "../configs/typeorm.config";
 import { Blog } from "../entities/blog.entity";
 import { ManageCache } from "../utils/manageCache";
 

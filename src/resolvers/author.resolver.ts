@@ -1,5 +1,5 @@
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
-import { redis } from "../config/redis.config";
+import { redis } from "../configs/redis.config";
 import { Author } from "../entities/author.entity";
 import {
   AllAuthorResponse,

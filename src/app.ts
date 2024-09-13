@@ -9,8 +9,8 @@ import express from "express";
 import * as http from "http";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
-import { PORT } from "./config/constants.config";
-import { AppDataSource } from "./config/typeorm.config";
+import { PORT } from "./configs/constants.config";
+import { AppDataSource } from "./configs/typeorm.config";
 import { AuthorResolver } from "./resolvers/author.resolver";
 import { BlogResolver } from "./resolvers/blog.resolver";
 

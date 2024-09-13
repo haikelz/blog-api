@@ -1,4 +1,4 @@
-import { redis } from "../config/redis.config";
+import { redis } from "../configs/redis.config";
 
 // Cache management using Redis
 export class ManageCache {

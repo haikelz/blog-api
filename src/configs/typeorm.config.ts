@@ -10,7 +10,7 @@ import {
   REDIS_PORT,
 } from "./constants.config";
 
-export const AppDataSource = new DataSource({
+const AppDataSource = new DataSource({
   type: "postgres",
   host: DATABASE_HOST,
   port: DATABASE_PORT,
@@ -31,6 +31,8 @@ export const AppDataSource = new DataSource({
     },
   },
   // Handle migrations
-  migrations: [],
+  migrations: ["migrations/*{.ts,.js}"],
   migrationsTableName: "migrations",
 });
+
+export default AppDataSource;

@@ -1,4 +1,4 @@
-import { AppDataSource } from "../config/typeorm.config";
+import AppDataSource from "../configs/typeorm.config";
 import { Author } from "../entities/author.entity";
 
 export class AuthorService {
