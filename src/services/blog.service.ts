@@ -1,4 +1,5 @@
 import slugify from "slugify";
+import { v4 as uuidv4 } from "uuid";
 import { AppDataSource } from "../config/typeorm.config";
 import { Blog } from "../entities/blog.entity";
 import { ManageCache } from "../utils/manageCache";
@@ -16,9 +17,7 @@ export class BlogService {
         author: { email, username },
       },
     });
-    const cachedData = await this.manageCache.getDataFromCache(
-      `Email: ${email}, Username: ${username}`
-    );
+    const cachedData = await this.manageCache.getDataFromCache(`${uuidv4()}`);
 
     if (cachedData) {
       return cachedData;
@@ -31,10 +30,8 @@ export class BlogService {
 
   public async create(params: {
     thumbnail: string;
-
     email: string;
     username: string;
-
     content: string;
     title: string;
     tags: string[];
@@ -47,20 +44,7 @@ export class BlogService {
         content: params.content,
         tags: params.tags,
       })
-      .save()
-      .then(
-        async () =>
-          await this.manageCache.setCache(
-            `Email: ${params.email}, Username: ${params.username}`,
-            JSON.stringify({
-              slug: slugify(params.title, { lower: true }),
-              thumbnail: params.thumbnail,
-              title: params.title,
-              content: params.content,
-              tags: params.tags,
-            })
-          )
-      );
+      .save();
   }
 
   public async update(params: {

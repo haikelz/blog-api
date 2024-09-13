@@ -1,4 +1,6 @@
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import { v4 as uuidv4 } from "uuid";
+import { redis } from "../config/redis.config";
 import { Blog } from "../entities/blog.entity";
 import {
   AllBlogResponse,
@@ -19,12 +21,15 @@ export class BlogResolver {
     @Arg("email") email: string,
     @Arg("username") username: string
   ) {
-    const blogList = await this.service.getAll(email, username);
+    const [cachedData, blogList] = await Promise.all([
+      await redis.get(``),
+      await this.service.getAll(email, username),
+    ]);
 
     return {
       statusCode: 200,
       message: "Success get all blog!",
-      data: blogList,
+      data: cachedData ? cachedData : blogList,
     };
   }
 
@@ -37,14 +42,22 @@ export class BlogResolver {
     @Arg("content") content: string,
     @Arg("tags", () => [String]) tags: string[]
   ) {
-    await this.service.create({
-      thumbnail,
-      email,
-      username,
-      title,
-      content,
-      tags,
-    });
+    await Promise.all([
+      await this.service.create({
+        thumbnail,
+        email,
+        username,
+        title,
+        content,
+        tags,
+      }),
+
+      await this.service
+        .getAll(email, username)
+        .then(
+          async (res) => await redis.set(`${uuidv4()}`, JSON.stringify(res))
+        ),
+    ]);
 
     return {
       statusCode: 200,
@@ -61,14 +74,22 @@ export class BlogResolver {
     @Arg("username") username: string,
     @Arg("title") title: string
   ) {
-    await this.service.update({
-      slug,
-      content,
-      thumbnail,
-      email,
-      username,
-      title,
-    });
+    await Promise.all([
+      await this.service.update({
+        slug,
+        content,
+        thumbnail,
+        email,
+        username,
+        title,
+      }),
+
+      await this.service
+        .getAll(email, username)
+        .then(
+          async (res) => await redis.set(`${uuidv4()}`, JSON.stringify(res))
+        ),
+    ]);
 
     return {
       statusCode: 200,

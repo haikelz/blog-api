@@ -27,7 +27,7 @@ export class AuthorService {
     await AppDataSource.getRepository(Author)
       .create({
         email: params.email,
-        username: params.email,
+        username: params.username,
         image: params.image,
         description: params.description,
       })
@@ -44,6 +44,7 @@ export class AuthorService {
       .update(Author)
       .where({
         email: params.email,
+        username: params.username,
       })
       .execute();
   }

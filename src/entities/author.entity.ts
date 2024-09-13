@@ -16,7 +16,6 @@ import { Blog } from "./blog.entity";
 export class Author extends BaseEntity {
   @Field()
   @PrimaryColumn("varchar", { length: 255 })
-  @OneToMany(() => Blog, (blog) => blog.author, { onDelete: "CASCADE" })
   email: string;
 
   @Field()
@@ -42,4 +41,8 @@ export class Author extends BaseEntity {
   @Field()
   @DeleteDateColumn()
   deletedAt: Date;
+
+  @Field(() => [Blog])
+  @OneToMany(() => Blog, (blog) => blog.author)
+  blogs: Blog[];
 }
