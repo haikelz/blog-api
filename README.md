@@ -1,0 +1,3 @@
+- Typescript
+- Type ORM
+- Apollo Graph QL

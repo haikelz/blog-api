@@ -1,0 +1,14 @@
+version: "3.5"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    container_name: "backend-server"
+    restart: "always"
+    volumes:
+      - ".:/app"
+      - "/app/node_modules"
