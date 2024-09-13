@@ -1,5 +1,4 @@
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
-import { v4 as uuidv4 } from "uuid";
 import { redis } from "../config/redis.config";
 import { Blog } from "../entities/blog.entity";
 import {
@@ -55,7 +54,8 @@ export class BlogResolver {
       await this.service
         .getAll(email, username)
         .then(
-          async (res) => await redis.set(`${uuidv4()}`, JSON.stringify(res))
+          async (res) =>
+            await redis.set(`${email}:${username}`, JSON.stringify(res))
         ),
     ]);
 
@@ -87,7 +87,8 @@ export class BlogResolver {
       await this.service
         .getAll(email, username)
         .then(
-          async (res) => await redis.set(`${uuidv4()}`, JSON.stringify(res))
+          async (res) =>
+            await redis.set(`${email}:${username}`, JSON.stringify(res))
         ),
     ]);
 

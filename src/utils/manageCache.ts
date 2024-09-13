@@ -7,7 +7,7 @@ export class ManageCache {
     return cachedData;
   }
 
-  public async setCache(
+  public async setDataToCache(
     key: string,
     data: string,
     expire: number = 60 * 60 * 24

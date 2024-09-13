@@ -30,4 +30,7 @@ export const AppDataSource = new DataSource({
       },
     },
   },
+  // Handle migrations
+  migrations: [],
+  migrationsTableName: "migrations",
 });

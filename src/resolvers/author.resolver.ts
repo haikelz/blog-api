@@ -1,4 +1,5 @@
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import { redis } from "../config/redis.config";
 import { Author } from "../entities/author.entity";
 import {
   AllAuthorResponse,
@@ -6,23 +7,29 @@ import {
   BaseResponse,
 } from "../interfaces/response.interface";
 import { AuthorService } from "../services/author.service";
+import { ManageCache } from "../utils/manageCache";
 
 @Resolver(Author)
 export class AuthorResolver {
   private service: AuthorService;
+  private manageCache: ManageCache;
 
   constructor() {
     this.service = new AuthorService();
+    this.manageCache = new ManageCache();
   }
 
   @Query(() => AllAuthorResponse)
   async getAllAuthor() {
-    const response = await this.service.getAll();
+    const [cachedData, response] = await Promise.all([
+      await this.manageCache.getDataFromCache("author:all"),
+      await this.service.getAll(),
+    ]);
 
     return {
       statusCode: 200,
       message: "Success get all author!",
-      data: response,
+      data: cachedData ? cachedData : response,
     };
   }
 
@@ -31,12 +38,15 @@ export class AuthorResolver {
     @Arg("email") email: string,
     @Arg("username") username: string
   ) {
-    const response = await this.service.getByEmailAndUsername(email, username);
+    const [cachedData, response] = await Promise.all([
+      await this.manageCache.getDataFromCache(`author:${email}:${username}`),
+      await this.service.getByEmailAndUsername(email, username),
+    ]);
 
     return {
       statusCode: 200,
       message: "Success get author profile!",
-      data: response,
+      data: cachedData ? cachedData : response,
     };
   }
 
@@ -47,7 +57,13 @@ export class AuthorResolver {
     @Arg("image") image: string,
     @Arg("description") description: string
   ) {
-    await this.service.create({ email, username, image, description });
+    await Promise.all([
+      await this.service.create({ email, username, image, description }),
+      await this.manageCache.setDataToCache(
+        `author:${email}:${username}`,
+        JSON.stringify({ email, username, image, description })
+      ),
+    ]);
 
     return {
       statusCode: 200,
@@ -62,7 +78,13 @@ export class AuthorResolver {
     @Arg("image") image: string,
     @Arg("description") description: string
   ) {
-    await this.service.update({ email, username, image, description });
+    await Promise.all([
+      await this.service.update({ email, username, image, description }),
+      await redis.hset(
+        `author:${email}:${username}`,
+        JSON.stringify({ image, description })
+      ),
+    ]);
 
     return {
       statusCode: 200,
