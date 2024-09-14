@@ -1,5 +1,4 @@
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
-import { redis } from "../configs/redis.config";
 import { Blog } from "../entities/blog.entity";
 import {
   AllBlogResponse,
@@ -20,15 +19,12 @@ export class BlogResolver {
     @Arg("email") email: string,
     @Arg("username") username: string
   ) {
-    const [cachedData, blogList] = await Promise.all([
-      await redis.get(``),
-      await this.service.getAll(email, username),
-    ]);
+    const response = await this.service.getAll(email, username);
 
     return {
       statusCode: 200,
       message: "Success get all blog!",
-      data: cachedData ? cachedData : blogList,
+      data: response,
     };
   }
 
@@ -41,23 +37,14 @@ export class BlogResolver {
     @Arg("content") content: string,
     @Arg("tags", () => [String]) tags: string[]
   ) {
-    await Promise.all([
-      await this.service.create({
-        thumbnail,
-        email,
-        username,
-        title,
-        content,
-        tags,
-      }),
-
-      await this.service
-        .getAll(email, username)
-        .then(
-          async (res) =>
-            await redis.set(`${email}:${username}`, JSON.stringify(res))
-        ),
-    ]);
+    await this.service.create({
+      thumbnail,
+      email,
+      username,
+      title,
+      content,
+      tags,
+    });
 
     return {
       statusCode: 200,
@@ -74,23 +61,14 @@ export class BlogResolver {
     @Arg("username") username: string,
     @Arg("title") title: string
   ) {
-    await Promise.all([
-      await this.service.update({
-        slug,
-        content,
-        thumbnail,
-        email,
-        username,
-        title,
-      }),
-
-      await this.service
-        .getAll(email, username)
-        .then(
-          async (res) =>
-            await redis.set(`${email}:${username}`, JSON.stringify(res))
-        ),
-    ]);
+    await this.service.update({
+      slug,
+      content,
+      thumbnail,
+      email,
+      username,
+      title,
+    });
 
     return {
       statusCode: 200,

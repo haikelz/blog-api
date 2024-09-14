@@ -1,5 +1,4 @@
 import slugify from "slugify";
-import { v4 as uuidv4 } from "uuid";
 import AppDataSource from "../configs/typeorm.config";
 import { Blog } from "../entities/blog.entity";
 import { ManageCache } from "../utils/manageCache";
@@ -17,7 +16,8 @@ export class BlogService {
         author: { email, username },
       },
     });
-    const cachedData = await this.manageCache.getDataFromCache(`${uuidv4()}`);
+    const cachedData = await this.manageCache.getDataFromCache(`blog:${email}`);
+    console.log(cachedData);
 
     if (cachedData) {
       return cachedData;
@@ -26,7 +26,23 @@ export class BlogService {
     }
   }
 
-  public async getBySlug() {}
+  public async getBySlug(params: {
+    slug: string;
+    email: string;
+    username: string;
+  }) {
+    const response = await AppDataSource.getRepository(Blog).findOne({
+      where: {
+        author: {
+          email: params.email,
+          username: params.username,
+        },
+        slug: params.slug,
+      },
+    });
+
+    return response;
+  }
 
   public async create(params: {
     thumbnail: string;
@@ -42,6 +58,10 @@ export class BlogService {
         thumbnail: params.thumbnail,
         title: params.title,
         content: params.content,
+        author: {
+          email: params.email,
+          username: params.username,
+        },
         tags: params.tags,
       })
       .save();

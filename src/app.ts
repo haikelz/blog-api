@@ -10,7 +10,7 @@ import * as http from "http";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
 import { PORT } from "./configs/constants.config";
-import { AppDataSource } from "./configs/typeorm.config";
+import AppDataSource from "./configs/typeorm.config";
 import { AuthorResolver } from "./resolvers/author.resolver";
 import { BlogResolver } from "./resolvers/blog.resolver";
 
