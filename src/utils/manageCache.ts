@@ -13,6 +13,13 @@ export class ManageCache {
     expire: number = 60 * 60 * 24
   ) {
     await redis.set(key, data, "EX", expire);
-    return;
+  }
+
+  public async addDataToExistingCache(key: string, data: string) {
+    await redis.append(key, data);
+  }
+
+  public async deleteCache(key: string) {
+    await redis.del(key);
   }
 }

@@ -12,10 +12,14 @@ import {
 import { Author } from "./author.entity";
 
 @ObjectType()
-@Entity()
+@Entity({ name: "blog" })
 export class Blog extends BaseEntity {
   @Field()
-  @PrimaryColumn("text")
+  @PrimaryColumn("uuid")
+  id: string;
+
+  @Field()
+  @Column("text")
   slug: string;
 
   @Field()
@@ -23,7 +27,7 @@ export class Blog extends BaseEntity {
   thumbnail: string;
 
   @Field(() => Author)
-  @ManyToOne(() => Author, (author) => author.email, { onDelete: "CASCADE" })
+  @ManyToOne(() => Author, (author) => author.email)
   author: Author;
 
   @Field()

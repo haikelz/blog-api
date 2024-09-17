@@ -5,10 +5,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "5000:5000"
-    container_name: "backend-server"
-    restart: "always"
+    # Only when we hosted the API to VPS
+    # restart: always
+    container_name: backend-server
     volumes:
-      - ".:/app"
-      - "/app/node_modules"
+      - .:/app
+      - /app/node_modules
+    ports:
+      - 9000:9000

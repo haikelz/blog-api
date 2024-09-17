@@ -25,15 +25,11 @@ export class AuthorService {
       }),
     ]);
 
-    console.log(cachedData);
-
-    return response;
-    /*
     if (cachedData) {
       return JSON.parse(cachedData);
     } else {
       return response;
-    }*/
+    }
   }
 
   public async create(params: {
@@ -102,6 +98,9 @@ export class AuthorService {
   }
 
   public async delete(email: string, username: string) {
-    await AppDataSource.getRepository(Author).delete({ email, username });
+    await Promise.all([
+      await AppDataSource.getRepository(Author).delete({ email, username }),
+      await this.manageCache.deleteCache(`author:${email}:${username}`),
+    ]);
   }
 }
