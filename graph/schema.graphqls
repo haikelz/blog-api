@@ -1,0 +1,24 @@
+type Author {
+  id: String!
+  email: String!
+  username: String!
+  image: String
+  description: String
+}
+
+type Blog {
+  id: ID!
+  slug: String!
+  thumbnail: String
+  author: String
+  title: String
+  createdAt: String
+  updatedAt: String
+  deletedAt: String
+  content: String!
+  tags: [String]!
+}
+
+type Query {
+  blog: [Blog!]!
+}
