@@ -12,10 +12,14 @@ import {
 import { Author } from "./author.entity";
 
 @ObjectType()
-@Entity()
+@Entity({ name: "blog" })
 export class Blog extends BaseEntity {
   @Field()
-  @PrimaryColumn("text")
+  @PrimaryColumn("uuid")
+  id: string;
+
+  @Field()
+  @Column("text")
   slug: string;
 
   @Field()

@@ -1,4 +1,4 @@
-import { AppDataSource } from "../config/typeorm.config";
+import AppDataSource from "../configs/typeorm.config";
 import { Author } from "../entities/author.entity";
 
 export class AuthorService {
@@ -27,7 +27,7 @@ export class AuthorService {
     await AppDataSource.getRepository(Author)
       .create({
         email: params.email,
-        username: params.email,
+        username: params.username,
         image: params.image,
         description: params.description,
       })
@@ -42,8 +42,10 @@ export class AuthorService {
   }) {
     await AppDataSource.createQueryBuilder()
       .update(Author)
+      .set({ image: params.image, description: params.description })
       .where({
         email: params.email,
+        username: params.username,
       })
       .execute();
   }

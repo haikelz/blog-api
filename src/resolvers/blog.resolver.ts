@@ -15,25 +15,36 @@ export class BlogResolver {
   }
 
   @Query(() => AllBlogResponse)
-  async getAllBlog() {
-    const blogList = await this.service.getAll();
+  async getAllBlog(
+    @Arg("email") email: string,
+    @Arg("username") username: string
+  ) {
+    const response = await this.service.getAll(email, username);
 
     return {
       statusCode: 200,
       message: "Success get all blog!",
-      data: blogList,
+      data: response,
     };
   }
 
   @Mutation(() => BaseResponse)
   async createBlog(
     @Arg("thumbnail") thumbnail: string,
-    @Arg("author") author: string,
+    @Arg("email") email: string,
+    @Arg("username") username: string,
     @Arg("title") title: string,
     @Arg("content") content: string,
     @Arg("tags", () => [String]) tags: string[]
   ) {
-    await this.service.create({ thumbnail, author, title, content, tags });
+    await this.service.create({
+      thumbnail,
+      email,
+      username,
+      title,
+      content,
+      tags,
+    });
 
     return {
       statusCode: 200,
@@ -46,10 +57,18 @@ export class BlogResolver {
     @Arg("slug") slug: string,
     @Arg("content") content: string,
     @Arg("thumbnail") thumbnail: string,
-    @Arg("author") author: string,
+    @Arg("email") email: string,
+    @Arg("username") username: string,
     @Arg("title") title: string
   ) {
-    await this.service.update({ slug, content, thumbnail, author, title });
+    await this.service.update({
+      slug,
+      content,
+      thumbnail,
+      email,
+      username,
+      title,
+    });
 
     return {
       statusCode: 200,
@@ -58,8 +77,12 @@ export class BlogResolver {
   }
 
   @Mutation(() => BaseResponse)
-  async deleteBlog(@Arg("slug") slug: string) {
-    await this.service.delete(slug);
+  async deleteBlog(
+    @Arg("slug") slug: string,
+    @Arg("email") email: string,
+    @Arg("username") username: string
+  ) {
+    await this.service.delete({ slug, email, username });
 
     return {
       statusCode: 200,

@@ -12,11 +12,14 @@ import {
 import { Blog } from "./blog.entity";
 
 @ObjectType()
-@Entity()
+@Entity({ name: "author" })
 export class Author extends BaseEntity {
   @Field()
-  @PrimaryColumn("varchar", { length: 255 })
-  @OneToMany(() => Blog, (blog) => blog.author, { onDelete: "CASCADE" })
+  @PrimaryColumn("uuid")
+  id: string;
+
+  @Field()
+  @Column("varchar", { length: 255 })
   email: string;
 
   @Field()
@@ -42,4 +45,8 @@ export class Author extends BaseEntity {
   @Field()
   @DeleteDateColumn()
   deletedAt: Date;
+
+  @Field(() => [Blog])
+  @OneToMany(() => Blog, (blog) => blog.author, { onDelete: "CASCADE" })
+  blogs: Blog[];
 }

@@ -82,4 +82,7 @@ export class AuthorResolver {
       message: "Success delete Author!",
     };
   }
+
+  @Mutation(() => BaseResponse)
+  async signUp() {}
 }
