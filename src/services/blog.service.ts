@@ -1,29 +1,16 @@
 import slugify from "slugify";
 import AppDataSource from "../configs/typeorm.config";
 import { Blog } from "../entities/blog.entity";
-import { ManageCache } from "../utils/manageCache";
 
 export class BlogService {
-  private manageCache: ManageCache;
-
-  constructor() {
-    this.manageCache = new ManageCache();
-  }
-
   public async getAll(email: string, username: string) {
     const response = await AppDataSource.getRepository(Blog).find({
       where: {
         author: { email, username },
       },
     });
-    const cachedData = await this.manageCache.getDataFromCache(`blog:${email}`);
-    console.log(cachedData);
 
-    if (cachedData) {
-      return cachedData;
-    } else {
-      return response;
-    }
+    return response;
   }
 
   public async getBySlug(params: {
@@ -95,12 +82,14 @@ export class BlogService {
     email: string;
     username: string;
   }) {
-    await AppDataSource.getRepository(Blog).delete({
-      slug: params.slug,
-      author: {
-        email: params.email,
-        username: params.username,
-      },
-    });
+    await Promise.all([
+      await AppDataSource.getRepository(Blog).delete({
+        slug: params.slug,
+        author: {
+          email: params.email,
+          username: params.username,
+        },
+      }),
+    ]);
   }
 }

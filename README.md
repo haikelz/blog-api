@@ -1,11 +1,11 @@
-**Note**
+<div>
+  <h1>Blog API</h1>
+  <p>A simple Blog API</p>
+</div>
 
-This is just for my learning purpose. So I will do many trial and errors in this project.
-
-## Tech Stack
+## Technologies
 
 - Express JS
 - Typescript
 - Graph QL
 - Type ORM
-- IoRedis
